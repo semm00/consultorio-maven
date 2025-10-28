@@ -28,5 +28,10 @@ public class Paciente extends Pessoa {
         System.out.println("Data de Nascimento: " + getDataNascimento());
         System.out.println("Convênio: " + convenio);
     }
+
+    @Override
+    public String toString() {
+        return getNome() + " (CPF: " + getCpf() + ", Convênio: " + convenio + ")";
+    }
 }
 

@@ -52,6 +52,26 @@ public class ConsultaDAO {
 		}
 	}
 
+	public void removerPorId(Long id) {
+		EntityManager em = JPAUtil.getEntityManager();
+		EntityTransaction transaction = em.getTransaction();
+		try {
+			transaction.begin();
+			Consulta consulta = em.find(Consulta.class, id);
+			if (consulta != null) {
+				em.remove(consulta);
+			}
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction.isActive()) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		} finally {
+			em.close();
+		}
+	}
+
 	public java.util.List<Consulta> listarTodos() {
 		EntityManager em = JPAUtil.getEntityManager();
 		try {

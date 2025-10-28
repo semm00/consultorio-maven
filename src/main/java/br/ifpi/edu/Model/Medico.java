@@ -37,5 +37,10 @@ public class Medico extends Funcionario {
     public void emitirLaudo() {
         System.out.println("Laudo emitido pelo médico " + getNome());
     }
+
+    @Override
+    public String toString() {
+        return getNome() + " (CRM: " + crm + ", Especialidade: " + especialidade + ")";
+    }
 }
 

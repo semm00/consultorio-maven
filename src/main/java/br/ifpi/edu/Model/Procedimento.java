@@ -1,55 +1,61 @@
 package br.ifpi.edu.Model;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "consulta")
-public class Consulta implements Agendavel {
+@Table(name = "procedimento")
+public class Procedimento implements Agendavel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "medico_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "medico_id", nullable = false)
     private Medico medico;
 
-    @ManyToOne
-    @JoinColumn(name = "paciente_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
 
+    @Column(name = "data_hora", nullable = false)
     private LocalDateTime dataHora;
 
-    public Consulta() {
+    @Column(name = "descricao", nullable = false)
+    private String descricao;
+
+    public Procedimento() {
     }
 
-    public Consulta(Medico medico, Paciente paciente, LocalDateTime dataHora) {
+    public Procedimento(Medico medico, Paciente paciente, LocalDateTime dataHora, String descricao) {
         this.medico = medico;
         this.paciente = paciente;
         this.dataHora = dataHora;
+        this.descricao = descricao;
     }
 
     @Override
     public void agendar() {
-        System.out.println("Consulta agendada para " + formatarDataHora());
+        System.out.println("Procedimento agendado para " + formatarDataHora());
     }
 
     @Override
     public void cancelar() {
-        System.out.println("Consulta cancelada.");
+        System.out.println("Procedimento cancelado.");
     }
 
-    public void imprimirRecibo() {
-        System.out.println("Recibo: Consulta com Dr(a). " + medico.getNome() + 
-                           " para paciente " + paciente.getNome() +
-                           " em " + formatarDataHora());
+    public String resumo() {
+        return String.format("Procedimento %s com Dr(a). %s para %s em %s", descricao, medico.getNome(), paciente.getNome(), formatarDataHora());
     }
 
     private String formatarDataHora() {
@@ -73,6 +79,10 @@ public class Consulta implements Agendavel {
         return dataHora;
     }
 
+    public String getDescricao() {
+        return descricao;
+    }
+
     public void setMedico(Medico medico) {
         this.medico = medico;
     }
@@ -84,5 +94,13 @@ public class Consulta implements Agendavel {
     public void setDataHora(LocalDateTime dataHora) {
         this.dataHora = dataHora;
     }
-}
 
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    @Override
+    public String toString() {
+        return resumo();
+    }
+}

@@ -1,55 +1,62 @@
 package br.ifpi.edu.Model;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "consulta")
-public class Consulta implements Agendavel {
+@Table(name = "exame")
+public class Exame implements Agendavel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "medico_id")
     private Medico medico;
 
-    @ManyToOne
-    @JoinColumn(name = "paciente_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
 
+    @Column(name = "data_hora", nullable = false)
     private LocalDateTime dataHora;
 
-    public Consulta() {
+    @Column(name = "tipo", nullable = false)
+    private String tipo;
+
+    public Exame() {
     }
 
-    public Consulta(Medico medico, Paciente paciente, LocalDateTime dataHora) {
+    public Exame(Medico medico, Paciente paciente, LocalDateTime dataHora, String tipo) {
         this.medico = medico;
         this.paciente = paciente;
         this.dataHora = dataHora;
+        this.tipo = tipo;
     }
 
     @Override
     public void agendar() {
-        System.out.println("Consulta agendada para " + formatarDataHora());
+        System.out.println("Exame agendado para " + formatarDataHora());
     }
 
     @Override
     public void cancelar() {
-        System.out.println("Consulta cancelada.");
+        System.out.println("Exame cancelado.");
     }
 
-    public void imprimirRecibo() {
-        System.out.println("Recibo: Consulta com Dr(a). " + medico.getNome() + 
-                           " para paciente " + paciente.getNome() +
-                           " em " + formatarDataHora());
+    public String resumo() {
+        String medicoNome = medico != null ? medico.getNome() : "Sem médico vinculado";
+        return String.format("Exame %s para %s em %s (Responsável: %s)", tipo, paciente.getNome(), formatarDataHora(), medicoNome);
     }
 
     private String formatarDataHora() {
@@ -73,6 +80,10 @@ public class Consulta implements Agendavel {
         return dataHora;
     }
 
+    public String getTipo() {
+        return tipo;
+    }
+
     public void setMedico(Medico medico) {
         this.medico = medico;
     }
@@ -84,5 +95,13 @@ public class Consulta implements Agendavel {
     public void setDataHora(LocalDateTime dataHora) {
         this.dataHora = dataHora;
     }
-}
 
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    @Override
+    public String toString() {
+        return resumo();
+    }
+}
