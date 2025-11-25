@@ -6,6 +6,18 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
 public class ConsultaDAO {
+
+	private static ConsultaDAO instance;
+
+	private ConsultaDAO() {
+	}
+
+	public static ConsultaDAO getInstance() {
+		if (instance == null) {
+			instance = new ConsultaDAO();
+		}
+		return instance;
+	}
 	public void salvar(Consulta consulta) {
 		EntityManager em = JPAUtil.getEntityManager();
 		EntityTransaction transaction = em.getTransaction();

@@ -10,6 +10,18 @@ import jakarta.persistence.TypedQuery;
 
 public class ProcedimentoDAO {
 
+    private static ProcedimentoDAO instance;
+
+    private ProcedimentoDAO() {
+    }
+
+    public static ProcedimentoDAO getInstance() {
+        if (instance == null) {
+            instance = new ProcedimentoDAO();
+        }
+        return instance;
+    }
+
     public void salvar(Procedimento procedimento) {
         EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction transaction = em.getTransaction();

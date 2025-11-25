@@ -10,6 +10,18 @@ import jakarta.persistence.TypedQuery;
 
 public class ExameDAO {
 
+    private static ExameDAO instance;
+
+    private ExameDAO() {
+    }
+
+    public static ExameDAO getInstance() {
+        if (instance == null) {
+            instance = new ExameDAO();
+        }
+        return instance;
+    }
+
     public void salvar(Exame exame) {
         EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction transaction = em.getTransaction();

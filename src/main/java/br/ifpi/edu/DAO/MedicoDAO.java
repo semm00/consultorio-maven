@@ -12,6 +12,18 @@ import br.ifpi.edu.JPAUtil;
 
 public class MedicoDAO {
 
+    private static MedicoDAO instance;
+
+    private MedicoDAO() {
+    }
+
+    public static MedicoDAO getInstance() {
+        if (instance == null) {
+            instance = new MedicoDAO();
+        }
+        return instance;
+    }
+
     public void salvar(Medico medico) {
         EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction transaction = em.getTransaction();
@@ -47,6 +59,18 @@ public class MedicoDAO {
             return query.getSingleResult();
         } catch (NoResultException e) {
             return null;
+        } finally {
+            em.close();
+        }
+    }
+
+    public java.util.List<Medico> buscarPorNome(String nome) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            String jpql = "SELECT m FROM Medico m WHERE LOWER(m.nome) LIKE LOWER(:nome)";
+            TypedQuery<Medico> query = em.createQuery(jpql, Medico.class);
+            query.setParameter("nome", "%" + nome + "%");
+            return query.getResultList();
         } finally {
             em.close();
         }
